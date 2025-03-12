@@ -88,6 +88,23 @@ def mostrar_persona(fase):
         print(r" |")
         print("---")
 
+def elegir_dificultad():
+    system("clear")
+    print("Elige la dificultad")
+    print("[1] Facil (4-6 letras)")
+    print("[2] Intermedio (6-8 letras)")
+    print("[3] Dificil (+8 letreas)")
+    print("[4] Sigma (solo para sigmas)")
+    dificultad = int(input("Dificultad: "))
+
+    if dificultad == 1: lista = dificultad_facil
+    elif dificultad == 2: lista = dificultad_intermedia
+    elif dificultad == 3: lista = dificultad_dificil
+    elif dificultad == 4: lista = dificultad_sigma
+    else: print("No es una opcion valida")
+
+    return lista
+
 def elegir_palabra(lista_palabras):
     x = randint(0, len(lista_palabras) -1)
     palabra = lista_palabras[x]
@@ -114,7 +131,26 @@ def pedir_letra():
     letra = input("Letra: ")
     return letra
 
-lista_palabras = [
+# listas con las palabras segun su dificultad
+dificultad_facil = [
+    "gato",
+    "perro",
+    "sol",
+    "luz",
+    "flor",
+    "casa",
+    "pan",
+    "lago",
+    "sal",
+    "vino",
+    "fuego",
+    "raton",
+    "arbol",
+    "llave",
+    "plaza"
+]
+
+dificultad_intermedia = [
     "montaña",
     "caballo",
     "ventana",
@@ -132,58 +168,117 @@ lista_palabras = [
     "semilla"
 ]
 
-fase = 1
-letras_usadas = []
+dificultad_dificil = [
+    "astronauta",
+    "electricidad",
+    "constitucion",
+    "murcielago",
+    "anticonstitucional",
+    "biblioteca",
+    "programador",
+    "hipopotamo",
+    "travesia",
+    "melancolia",
+    "subterraneo",
+    "ornitorrinco",
+    "psicologia",
+    "desarrollador",
+    "hidraulico"
+]
 
-palabra = elegir_palabra(lista_palabras)
-palabra_oculta = mostrar_palabra(palabra)
+dificultad_sigma = [
+    "sigma",
+    "mewing",
+    "skibidi",
+    "toilet",
+    "hentai",
+    "cepecito",
+    "tetas",
+    "culos",
+    "pornhub",
+    "xvideos"
+]
 
+verificacion = False
+
+# bucle principal
 while True:
     system("clear")
-    mostrar_persona(fase)
-    print()
-    print(palabra_oculta)
-    print(f"Letras usadas: {letras_usadas}")
-    print()
+    print("<< Menu principal >>")
+    print("[1] Elegir dificultad")
+    print("[2] Jugar")
+    print("[3] Salir")
+    opcion = int(input("Opcion: "))
 
-    letra = pedir_letra()
+    if opcion == 1:
+        dificultad_lista = elegir_dificultad()
+        verificacion = True
 
-    # Si la letra ya fue usada:
-    if letra in letras_usadas:
-        print("Ya usaste esa letra. Intenta otra.")
-        a = input("Preciona ENTER para continuar")
-        continue
-    else:
-        letras_usadas.append(letra)
+    elif opcion == 2 and verificacion:
+        
+        fase = 1
+        letras_usadas = []
 
-    # Si la letra está en la palabra
-    if letra in palabra:
-        nueva_palabra_oculta = actualizar_palabra(palabra, palabra_oculta, letra)
+        palabra = elegir_palabra(dificultad_lista)
+        palabra_oculta = mostrar_palabra(palabra)
 
-        # Si no cambió, no pasa nada
-        if nueva_palabra_oculta == palabra_oculta:
-            print(f"La letra '{letra}' ya estaba descubierta.")
-            a = input("Preciona ENTER para continuar")
-        else:
-            palabra_oculta = nueva_palabra_oculta
-            print(f"¡Bien! La letra '{letra}' está en la palabra.")
-            a = input("Preciona ENTER para continuar")
+        while True:
+            system("clear")
+            mostrar_persona(fase)
+            print()
+            print(palabra_oculta)
+            print(f"Letras usadas: {letras_usadas}")
+            print()
 
-    else:
-        print(f"La letra '{letra}' no está en la palabra.")
-        a = input("Preciona ENTER para continuar")
-        fase += 1
+            letra = pedir_letra()
 
-    # Ganaste
-    if palabra_oculta == palabra:
-        print("\n¡Felicidades! Adivinaste la palabra:", palabra)
-        a = input("Preciona ENTER para continuar")
+            if len(letra) > 1:
+                print("No puedes poner más de una letra down de mierda")
+                input("Presiona ENTER para continuar")
+                continue  # Vuelve a pedir una letra
+
+            if letra in letras_usadas:
+                print("Ya usaste esa letra. Intenta otra.")
+                input("Presiona ENTER para continuar")
+                continue  # Vuelve a pedir una letra
+
+            # Si la letra no ha sido usada, la agregamos a la lista
+            letras_usadas.append(letra)
+
+            # Si la letra está en la palabra
+            if letra in palabra:
+                nueva_palabra_oculta = actualizar_palabra(palabra, palabra_oculta, letra)
+
+                # Si no cambió, es porque ya estaba descubierta
+                if nueva_palabra_oculta == palabra_oculta:
+                    print(f"La letra '{letra}' ya estaba descubierta.")
+                else:
+                    palabra_oculta = nueva_palabra_oculta
+                    print(f"¡Bien! La letra '{letra}' está en la palabra.")
+            else:
+                print(f"La letra '{letra}' no está en la palabra.")
+                fase += 1
+
+            input("Presiona ENTER para continuar")
+
+            # Ganaste
+            if palabra_oculta == palabra:
+                print("\n¡Felicidades! Adivinaste la palabra:", palabra)
+                input("Presiona ENTER para continuar")
+                break
+
+            # Perdiste
+            if fase >= 7:
+                system("clear")
+                mostrar_persona(fase)
+                print("\n¡Perdiste! La palabra era:", palabra)
+                input("Presiona ENTER para continuar")
+                break
+        
+    elif opcion == 3:
+        print("Saliste del programa")
         break
 
-    # Perdiste
-    if fase >= 7:
-        system("clear")
-        mostrar_persona(fase)
-        print("\n¡Perdiste! La palabra era:", palabra)
-        a = input("Preciona ENTER para continuar")
-        break
+    else:
+        print("Opcion invalida")
+        input("Presiona ENTER para continuar")
