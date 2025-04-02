@@ -13,6 +13,7 @@ def abrir(event=None):
         for linea in archivo:
             texto.insert(tk.INSERT, linea)
 
+# funcion para crear un archivo nuevo
 def nuevo(event=None):
     texto.delete("1.0", tk.END)
     nombre_archivo.config(text="Nuevo")
@@ -50,6 +51,27 @@ def pegar(event=None):
 def mostrar_info():
     showinfo("Version", f"Version: {version}")
 
+# funcion para personalizar la app
+def personalizar(opcion):
+    estilos = {
+        1: {"fondo": "#282828", "text_color": "#ebdbb2", "fondo_alt": "#383838"},
+        2: {"fondo": "#151515", "text_color": "#ffffff", "fondo_alt": "#252525"},
+        3: {"fondo": "#2e3440", "text_color": "#d8dee9", "fondo_alt": "#81a1c1"},
+    }
+
+    if opcion in estilos:
+        tema = estilos[opcion]
+        screen.config(bg=tema["fondo"])
+        texto.config(bg=tema["fondo_alt"], fg=tema["text_color"])
+        nombre_archivo.config(bg=tema["fondo"], fg=tema["text_color"])
+        menubar.config(bg=tema["fondo"], fg=tema["text_color"], activebackground=tema["fondo_alt"], activeforeground=tema["text_color"])
+        archivomenu.config(bg=tema["fondo"], fg=tema["text_color"], activebackground=tema["fondo_alt"], activeforeground=tema["text_color"])
+        editarmenu.config(bg=tema["fondo"], fg=tema["text_color"], activebackground=tema["fondo_alt"], activeforeground=tema["text_color"])
+        personalizarmenu.config(bg=tema["fondo"], fg=tema["text_color"], activebackground=tema["fondo_alt"], activeforeground=tema["text_color"])
+        acercamenu.config(bg=tema["fondo"], fg=tema["text_color"], activebackground=tema["fondo_alt"], activeforeground=tema["text_color"])
+
+
+
 # variables
 program_name = "Editor de texto"
 version = 1.0
@@ -72,29 +94,36 @@ pady = 2
 screen.config(bg=fondo)
 
 # crear menu
-menubar = tk.Menu(screen, bg=fondo_alt, fg=text_color, font=fuente)
+menubar = tk.Menu(screen, bg=fondo, fg=text_color, activebackground=fondo_alt, activeforeground=text_color, font=fuente)
 screen.config(menu=menubar)
 
 # menu para archivos
-archivomenu = tk.Menu(menubar, tearoff=0)
+archivomenu = tk.Menu(menubar, tearoff=0, bg=fondo, fg=text_color, activebackground=fondo_alt, activeforeground=text_color, font=fuente)
 archivomenu.add_command(label="Nuevo", command=nuevo)
 archivomenu.add_command(label="Abrir", command=abrir)
 archivomenu.add_command(label="Guardar", command=guardar)
 archivomenu.add_command(label="Guardar como", command=guardar_como)
 
 # menu para editar
-editarmenu = tk.Menu(menubar, tearoff=0)
+editarmenu = tk.Menu(menubar, tearoff=0, bg=fondo, fg=text_color, activebackground=fondo_alt, activeforeground=text_color, font=fuente)
 editarmenu.add_command(label="Cortar", command=cortar)
 editarmenu.add_command(label="Copiar", command=copiar)
 editarmenu.add_command(label="Pegar", command=pegar)
 
+# menu para personalizar el editor
+personalizarmenu = tk.Menu(menubar, tearoff=0, bg=fondo, fg=text_color, activebackground=fondo_alt, activeforeground=text_color, font=fuente)
+personalizarmenu.add_command(label="Tema: Gruvbox", command=lambda: personalizar(1))
+personalizarmenu.add_command(label="Tema: Minimal", command=lambda: personalizar(2))
+personalizarmenu.add_command(label="Tema: Nord", command=lambda: personalizar(3))
+
 # menu acerca de
-acercamenu = tk.Menu(menubar, tearoff=0)
-acercamenu.add_command(label="Version")
+acercamenu = tk.Menu(menubar, tearoff=0, bg=fondo, fg=text_color, activebackground=fondo_alt, activeforeground=text_color, font=fuente)
+acercamenu.add_command(label="Version", command=mostrar_info)
 
 # poner menus en menubar
 menubar.add_cascade(label="Archivo", menu=archivomenu)
 menubar.add_cascade(label="Editar", menu=editarmenu)
+menubar.add_cascade(label="Personalizar", menu=personalizarmenu)
 menubar.add_cascade(label="Acerca de", menu=acercamenu)
 
 # crear un Text
